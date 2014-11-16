@@ -85,16 +85,16 @@
                     </thead>
                     <tbody>
                     <tr ng-repeat="comment in comments">
-                        <td class="col-md-2">
+                        <td class="col-md-3">
                             <p>Name: {{comment.name}}</p>
                             <p><rating max="5" ng-model="comment.rating" ng-change="updateComment(comment)" readonly="true"></rating></p>
                             <p>Title: {{comment.title}}</p>
-                        <td><p>{{comment.body}}</p></td>
-                        <td><p>{{comment.score}}
+                        <td class="col-md-7"><p>{{comment.body}}</p></td>
+                        <td class="col-md-1"><p>{{comment.score}}
                             <span class="glyphicon glyphicon-thumbs-up" ng-click="incrementScore(comment, 1)"></span>
                             <span class="glyphicon glyphicon-thumbs-down" ng-click="incrementScore(comment, -1)"></span>
                         </p></td>
-                        <td><input type="checkbox" ng-model="comment.delete" ng-change="deleteComment(comment)"/></td>
+                        <td class="col-md-1"><input type="checkbox" ng-model="comment.delete" ng-change="deleteComment(comment)"/></td>
                     </tr>
                     </tbody>
                 </table>
