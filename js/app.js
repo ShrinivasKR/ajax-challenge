@@ -27,25 +27,35 @@ angular.module('CommentApp', ['ui.bootstrap'])
             $http.get(commentsUrl)
                 .success(function (data) {
                     $scope.comments = data.results;
+                    $scope.comments.sort($scope.compareForSort);
                 });
         };
         $scope.refreshComments();
+
+        $scope.compareForSort = function(first, second)
+        {
+            if (first.score == second.score)
+                return 0;
+            if (first.score < second.score)
+                return 1;
+            else
+                return -1;
+        }
 
         $scope.addComment = function() {
             $scope.inserting = true;
             $http.post(commentsUrl, $scope.newComment)
                 .success(function(responseData) {
                     $scope.newComment.objectId = responseData.objectId;
-                    $scope.newComment.score = 0;
-                    $scope.incrementScore($scope.newComment, 0);
                     $scope.comments.push($scope.newComment);
-                    $scope.newComment = {};
+                    $scope.incrementScore($scope.newComment, 0);
                 })
                 .finally(function () {
+                    $scope.newComment = {};
                     $scope.inserting = false;
                 });
-
         };
+
         $scope.updateComment = function(comment) {
             $http.put(commentsUrl + '/' + comment.objectId, comment)
                 .success(function() {
