@@ -53,6 +53,13 @@ angular.module('CommentApp', ['ui.bootstrap'])
                 });
         };
 
+        $scope.deleteComment = function(comment) {
+            $http.put(commentsUrl + '/' + comment.objectId, comment)
+                .success(function() {
+                    //we could give some feedback to the user
+                });
+        };
+
         $scope.incrementVotes = function(comment, amount) {
             var postData = {
                 votes: {
