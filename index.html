@@ -56,7 +56,7 @@
                     </div>
 
                     <div class="form-group">
-                        <button type="submit" class="btn btn-primary" ng-disabled="inserting">Add Task</button>
+                        <button type="submit" class="btn btn-primary" ng-disabled="inserting">Add Comment</button>
                         <img src="img/ajax-spinner.gif" alt="loading animation" ng-if="inserting"/>
                     </div>
 
@@ -77,34 +77,38 @@
                 <table class="table">
                     <thead>
                     <tr>
+                        <th>Review</th>
                         <th>Rating</th>
                         <th>Name</th>
                         <th>Title</th>
-                        <th>Body</th>
                         <th>Score</th>
+                        <th>Delete</th>
                     </tr>
                     </thead>
                     <tbody>
                     <tr ng-class="{done: comment.done}" ng-repeat="comment in comments">
+
+                        <td>{{comment.body}}</td>
+
                         <td>
                             <rating max="5" ng-model="comment.rating" ng-change="updateComment(comment)" readonly="comment.done"></rating>
                         </td>
 
-                        <td>{{comment.name}}
-
-                        </td>
+                        <td>{{comment.name}}</td>
 
                         <td>{{comment.title}}</td>
 
-                        <td>{{comment.body}}
-
-                        </td>
+                        <!--<td>{{comment.body}}</td>-->
 
                         <td>
                             {{comment.votes || 0}}
                             <span class="glyphicon glyphicon-thumbs-up" ng-click="incrementVotes(comment, 1)"></span>
                             <span class="glyphicon glyphicon-thumbs-down" ng-click="incrementVotes(comment, -1)"></span>
                         </td>
+
+                        <td><input type="checkbox" ng-model="task.done" ng-change="updateComment(comment)"/></td>
+
+
                     </tr>
                     </tbody>
                 </table>
