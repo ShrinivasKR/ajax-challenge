@@ -4,14 +4,14 @@
     define your module and controllers here
 */
 
-//this is the base URL for all task objects managed by your application
-//requesting this with a GET will get all tasks objects
-//sending a POST to this will insert a new task object
-//sending a PUT to this URL + '/' + task.objectId will update an existing task
-//sending a DELETE to this URL + '/' + task.objectId will delete an existing task
-var tasksUrl = 'https://api.parse.com/1/classes/tasks';
+//this is the base URL for all comment objects managed by your application
+//requesting this with a GET will get all comments objects
+//sending a POST to this will insert a new comment object
+//sending a PUT to this URL + '/' + comment.objectId will update an existing comment
+//sending a DELETE to this URL + '/' + comment.objectId will delete an existing comment
+var commentsUrl = 'https://api.parse.com/1/classes/comments';
 
-angular.module('ToDoApp', ['ui.bootstrap'])
+angular.module('CommentApp', ['ui.bootstrap'])
     .config(function($httpProvider) {
         //Parse required two extra headers sent with every HTTP request: X-Parse-Application-Id, X-Parse-REST-API-Key
         //the first needs to be set to your application's ID value
@@ -22,38 +22,38 @@ angular.module('ToDoApp', ['ui.bootstrap'])
         $httpProvider.defaults.headers.common['X-Parse-Application-Id'] = 'sySXU1zS5kJWxIEfC2OtSqcNVqLJAZvGkjexXRIw';
         $httpProvider.defaults.headers.common['X-Parse-REST-API-Key'] = 'ZDT8smxh72ep4pY1gZpIKsV4LSBG6EgGTbUzC4UR';
     })
-    .controller('TasksController', function($scope, $http) {
-        $scope.refreshTasks = function() {
-            $http.get(tasksUrl + '?where={"done":false}')
+    .controller('CommentsController', function($scope, $http) {
+        $scope.refreshComments = function() {
+            $http.get(commentsUrl + '?where={"done":false}')
                 .success(function (data) {
-                    $scope.tasks = data.results;
+                    $scope.comments = data.results;
                 });
         };
-        $scope.refreshTasks();
+        $scope.refreshComments();
 
-        $scope.newTask = {done: false};
+        $scope.newComment = {done: false};
 
-        $scope.addTask = function() {
+        $scope.addComment = function() {
             $scope.inserting = true;
-            $http.post(tasksUrl, $scope.newTask)
+            $http.post(commentsUrl, $scope.newComment)
                 .success(function(responseData) {
-                    $scope.newTask.objectId = responseData.objectId;
-                    $scope.tasks.push($scope.newTask);
-                    $scope.newTask = {done: false};
+                    $scope.newComment.objectId = responseData.objectId;
+                    $scope.comments.push($scope.newComment);
+                    $scope.newComment = {done: false};
                 })
                 .finally(function () {
                     $scope.inserting = false;
                 });
 
         };
-        $scope.updateTask = function(task) {
-            $http.put(tasksUrl + '/' + task.objectId, task)
+        $scope.updateComment = function(comment) {
+            $http.put(commentsUrl + '/' + comment.objectId, comment)
                 .success(function() {
                     //we could give some feedback to the user
                 });
         };
 
-        $scope.incrementVotes = function(task, amount) {
+        $scope.incrementVotes = function(comment, amount) {
             var postData = {
                 votes: {
                     __op: "Increment",
@@ -61,9 +61,9 @@ angular.module('ToDoApp', ['ui.bootstrap'])
                 }
             };
             $scope.updating = true;
-            $http.put(tasksUrl + '/' + task.objectId, postData)
+            $http.put(commentsUrl + '/' + comment.objectId, postData)
                 .success(function(respData) {
-                    task.votes = respData.votes;
+                    comment.votes = respData.votes;
                 })
                 .error(function(err) {
                     console.log(err);
