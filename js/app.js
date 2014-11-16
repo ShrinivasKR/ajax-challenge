@@ -24,22 +24,22 @@ angular.module('CommentApp', ['ui.bootstrap'])
     })
     .controller('CommentsController', function($scope, $http) {
         $scope.refreshComments = function() {
-            $http.get(commentsUrl + '?where={"done":false}')
+            $http.get(commentsUrl)
                 .success(function (data) {
                     $scope.comments = data.results;
                 });
         };
         $scope.refreshComments();
 
-        $scope.newComment = {done: false};
-
         $scope.addComment = function() {
             $scope.inserting = true;
             $http.post(commentsUrl, $scope.newComment)
                 .success(function(responseData) {
                     $scope.newComment.objectId = responseData.objectId;
+                    $scope.newComment.score = 0;
+                    $scope.incrementScore($scope.newComment, 0);
                     $scope.comments.push($scope.newComment);
-                    $scope.newComment = {done: false};
+                    $scope.newComment = {};
                 })
                 .finally(function () {
                     $scope.inserting = false;
@@ -54,29 +54,32 @@ angular.module('CommentApp', ['ui.bootstrap'])
         };
 
         $scope.deleteComment = function(comment) {
-            $http.put(commentsUrl + '/' + comment.objectId, comment)
-                .success(function() {
+            $http.delete(commentsUrl + '/' + comment.objectId, comment)
+                .finally(function() {
                     //we could give some feedback to the user
+                    $scope.refreshComments();
                 });
         };
 
-        $scope.incrementVotes = function(comment, amount) {
-            var postData = {
-                votes: {
-                    __op: "Increment",
-                    amount: amount
-                }
-            };
-            $scope.updating = true;
-            $http.put(commentsUrl + '/' + comment.objectId, postData)
-                .success(function(respData) {
-                    comment.votes = respData.votes;
-                })
-                .error(function(err) {
-                    console.log(err);
-                })
-                .   finally(function() {
-                    $scope.updating = false;
-                });
+        $scope.incrementScore = function(comment, amount) {
+            if(!(comment.score == 0 && amount < 0)) {
+                var postData = {
+                    score: {
+                        __op: "Increment",
+                        amount: amount
+                    }
+                };
+                $scope.updating = true;
+                $http.put(commentsUrl + '/' + comment.objectId, postData)
+                    .success(function(respData) {
+                        comment.score = respData.score;
+                    })
+                    .error(function(err) {
+                        console.log(err);
+                    })
+                    .   finally(function() {
+                        $scope.updating = false;
+                    });
+            }
         };
     });
